@@ -1,6 +1,8 @@
 cd tesseract
 if errorlevel 1 exit /b 1
 
+dir %LIBRARY_LIB%
+
 :: Isolate the build.
 mkdir Build-%PKG_NAME%
 cd Build-%PKG_NAME%
