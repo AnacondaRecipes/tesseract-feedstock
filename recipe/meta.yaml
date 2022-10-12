@@ -30,6 +30,7 @@ requirements:
     - pkg-config  # [not win]
     - make        # [not win]
     - cmake       # [win]
+    - ninja-base  # [win]
   host:
     - giflib      # [not win]
     - libarchive

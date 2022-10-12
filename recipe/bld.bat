@@ -6,7 +6,10 @@ mkdir Build-%PKG_NAME%
 cd Build-%PKG_NAME%
 if errorlevel 1 exit /b 1
 
-cmake -G "NMake Makefiles" ^
+:: Generate the build files.
+echo "Generating the build files..."
+cmake .. %CMAKE_ARGS% ^
+      -G"Ninja" ^
       -D CMAKE_BUILD_TYPE=Release ^
       -D CMAKE_PREFIX_PATH=%LIBRARY_PREFIX% ^
       -D CMAKE_INCLUDE_PATH=%LIBRARY_INC% ^
@@ -16,15 +19,18 @@ cmake -G "NMake Makefiles" ^
       -D SW_BUILD=OFF ^
       -D BUILD_TRAINING_TOOLS=OFF ^
       -D BUILD_SHARED_LIBS=ON ^
-      -D CMAKE_MODULE_LINKER_FLAGS=-whole-archive ^
-      ..
+      -D CMAKE_MODULE_LINKER_FLAGS=-whole-archive
 if errorlevel 1 exit 1
 
-cmake --build . --config Release
-if errorlevel 1 exit 1
+:: Build.
+echo "Building..."
+ninja
+if errorlevel 1 exit /b 1
 
-cmake --build . --config Release --target install 
-if errorlevel 1 exit 1
+:: Install.
+echo "Installing..."
+ninja install
+if errorlevel 1 exit /b 1
 
 :: Make copies of the .lib file without the embedded version number
 copy %LIBRARY_LIB%\tesseract41.lib %LIBRARY_LIB%\tesseract.lib
