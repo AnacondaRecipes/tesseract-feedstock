@@ -42,6 +42,8 @@ requirements:
     - openjpeg
     - xz           # [not win]
     - zlib
+  run:
+    - _openmp_mutex  # [linux]
 
 test:
   files:
@@ -56,6 +58,7 @@ about:
   license: Apache-2.0
   license_family: Apache
   license_file: tesseract/LICENSE
+  license_url: https://github.com/tesseract-ocr/tesseract/blob/main/LICENSE
   summary: An optical character recognition (OCR) engine
 
   description: |
