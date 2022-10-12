@@ -1,5 +1,9 @@
 cd tesseract
-build.msvs && cd build.msvs
+if errorlevel 1 exit /b 1
+
+:: Isolate the build.
+mkdir Build-%PKG_NAME%
+cd Build-%PKG_NAME%
 if errorlevel 1 exit /b 1
 
 cmake -G "NMake Makefiles" ^
