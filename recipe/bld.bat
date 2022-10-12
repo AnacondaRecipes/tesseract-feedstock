@@ -1,6 +1,6 @@
 cd tesseract
-mkdir build
-cd build
+build.msvs && cd build.msvs
+if errorlevel 1 exit /b 1
 
 cmake -G "NMake Makefiles" ^
       -D CMAKE_BUILD_TYPE=Release ^
