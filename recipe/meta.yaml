@@ -30,7 +30,6 @@ requirements:
     - pkg-config  # [not win]
     - make        # [not win]
     - cmake       # [win]
-    - pkgconfig   # [win]
   host:
     - giflib      # [not win]
     - libarchive
@@ -49,6 +48,7 @@ test:
   files:
     - eurotext.tif
   commands:
+    - tesseract -v
     - tesseract --help
     - tesseract --list-langs
     - tesseract eurotext.tif outputbase
