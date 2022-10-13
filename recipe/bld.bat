@@ -1,6 +1,6 @@
 :: cmd
 
-copy %LIBRARY_LIB%\leptonica\allheaders.h %LIBRARY_LIB%\allheaders.h
+REM cmake -E env CXXFLAGS="/Qpar /fp:fast"
 
 echo "Building %PKG_NAME%."
 cd tesseract
@@ -23,7 +23,7 @@ cmake -G "NMake Makefiles" ^
       -D CMAKE_INCLUDE_PATH=%LIBRARY_INC% ^
       -D CMAKE_LIBRARY_PATH=%LIBRARY_LIB% ^
       -D CMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ^
-      -D Leptonica_DIR=%LIBRARY_PREFIX% ^
+      -D Leptonica_DIR=%LIBRARY_PREFIX%\leptonica ^
       -D SW_BUILD=OFF ^
       -D BUILD_TRAINING_TOOLS=OFF ^
       -D BUILD_SHARED_LIBS=ON ^
