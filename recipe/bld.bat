@@ -10,7 +10,6 @@ mkdir Build-%PKG_NAME%
 cd Build-%PKG_NAME%
 if errorlevel 1 exit /b 1
 
-dir /s %LIBRARY_PREFIX%
 
 :: Generate the build files.
 echo "Generating the build files..."
