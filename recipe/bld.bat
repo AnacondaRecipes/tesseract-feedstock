@@ -25,6 +25,8 @@ cmake -G "NMake Makefiles" ^
       -D CMAKE_LIBRARY_PATH=%LIBRARY_LIB% ^
       -D CMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ^
       -D Leptonica_DIR=%LIBRARY_PREFIX% ^
+      -D Leptonica_INCLUDE_DIRS=%LIBRARY_PREFIX%\include\leptonica ^
+      -D Leptonica_LIBRARY_DIRS=%LIBRARY_PREFIX%\leptonica ^
       -D SW_BUILD=OFF ^
       -D BUILD_TRAINING_TOOLS=OFF ^
       -D BUILD_SHARED_LIBS=ON ^
