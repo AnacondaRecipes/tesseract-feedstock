@@ -3,9 +3,6 @@
 REM cmake -E env CXXFLAGS="/Qpar /fp:fast"
 
 echo "Building %PKG_NAME%."
-cd tesseract
-if errorlevel 1 exit /b 1
-
 
 
 :: Isolate the build.
@@ -18,6 +15,7 @@ if errorlevel 1 exit /b 1
 :: Generate the build files.
 echo "Generating the build files..."
 cmake -G "NMake Makefiles" ^
+      %CMAKE_ARGS% ^
       -D CMAKE_BUILD_TYPE=Release ^
       -D CMAKE_PREFIX_PATH=%LIBRARY_PREFIX% ^
       -D CMAKE_INCLUDE_PATH=%LIBRARY_INC% ^
