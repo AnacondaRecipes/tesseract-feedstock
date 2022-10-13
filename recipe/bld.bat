@@ -1,29 +1,15 @@
-:: cmd
-
-echo "Building %PKG_NAME%."
 cd tesseract
-if errorlevel 1 exit /b 1
+mkdir build
+cd build
 
-
-:: Isolate the build.
-mkdir Build-%PKG_NAME%
-cd Build-%PKG_NAME%
-if errorlevel 1 exit /b 1
-
-
-:: Generate the build files.
-echo "Generating the build files..."
 cmake -G "NMake Makefiles" ^
       -D CMAKE_BUILD_TYPE=Release ^
       -D CMAKE_PREFIX_PATH=%LIBRARY_PREFIX% ^
       -D CMAKE_INCLUDE_PATH=%LIBRARY_INC% ^
       -D CMAKE_LIBRARY_PATH=%LIBRARY_LIB% ^
       -D CMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ^
-      -D Leptonica_DIR=%LIBRARY_PREFIX% ^
-      -D SW_BUILD=OFF ^
-      -D BUILD_TRAINING_TOOLS=OFF ^
-      -D BUILD_SHARED_LIBS=ON ^
-      -D CMAKE_MODULE_LINKER_FLAGS=-whole-archive ^
+      -D SW_BUILD=0 ^
+      -D BUILD_TRAINING_TOOLS:BOOL=OFF ^
       ..
 if errorlevel 1 exit 1
 
