@@ -1,5 +1,9 @@
 :: cmd
 
+dir %LIBRARY_PREFIX%
+dir %LIBRARY_INC%
+dir %LIBRARY_LIB%
+
 echo "Building %PKG_NAME%."
 cd tesseract
 if errorlevel 1 exit /b 1
@@ -22,6 +26,7 @@ cmake -G "NMake Makefiles" ^
       -D CMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ^
       -D Leptonica_DIR=%LIBRARY_PREFIX% ^
       -D Leptonica_INCLUDE_DIRS=%LIBRARY_PREFIX%\include\leptonica ^
+      -D Leptonica_LIBRARY_DIRS=%LIBRARY_PREFIX%\leptonica ^
       -D SW_BUILD=OFF ^
       -D BUILD_TRAINING_TOOLS=OFF ^
       -D BUILD_SHARED_LIBS=ON ^
