@@ -1,5 +1,7 @@
 :: cmd
 
+dir %LIBRARY_INC%
+
 echo "Building %PKG_NAME%."
 cd tesseract
 if errorlevel 1 exit /b 1
