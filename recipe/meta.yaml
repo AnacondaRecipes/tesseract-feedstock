@@ -30,10 +30,10 @@ requirements:
     - automake      # [not win]
     - libtool       # [not win]
     - pkg-config
+    # make is neede for bootstrapping makefile fragments for automatic dependency tracking
     - make          # [not win]
     - cmake >=3.10  # [win]
   host:
-    - giflib        # [not win]
     - libarchive
     - jpeg
     - leptonica >=1.74.2
