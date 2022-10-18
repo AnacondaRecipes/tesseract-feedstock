@@ -26,22 +26,22 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - autoconf    # [not win]
-    - automake    # [not win]
-    - libtool     # [not win]
+    - autoconf      # [not win]
+    - automake      # [not win]
+    - libtool       # [not win]
     - pkg-config
-    - make        # [not win]
-    - cmake       # [win]
+    - make          # [not win]
+    - cmake >=3.10  # [win]
   host:
-    - giflib      # [not win]
+    - giflib        # [not win]
     - libarchive
     - jpeg
-    - leptonica
+    - leptonica >=1.74.2
     - libpng
     - libtiff
     - libwebp
     - openjpeg
-    - xz           # [not win]
+    - xz             ß# [not win]
     - zlib
   run:
     - _openmp_mutex  # [linux]
