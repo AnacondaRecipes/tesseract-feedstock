@@ -40,7 +40,7 @@ requirements:
     - libtiff
     - libwebp
     - openjpeg
-    - xz             ß# [not win]
+    - xz             # [not win]
     - zlib
   run:
     - _openmp_mutex  # [linux]
