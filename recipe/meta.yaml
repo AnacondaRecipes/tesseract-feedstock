@@ -28,16 +28,16 @@ requirements:
     - {{ compiler('cxx') }}
     - autoconf      # [not win]
     - automake      # [not win]
+    - cmake >=3.10  # [win]
     - libtool       # [not win]
-    - pkg-config
     # make is needed for bootstrapping makefile fragments for automatic dependency tracking
     - make          # [not win]
-    - cmake >=3.10  # [win]
+    - pkg-config
   host:
-    - libarchive
     - leptonica >=1.74.2
-  #run:
-  #  - _openmp_mutex  # [linux]
+    - libarchive
+  run:
+    - _openmp_mutex  # [linux]
 
 test:
   files:
@@ -47,6 +47,7 @@ test:
     - tesseract --help
     - tesseract --list-langs
     - tesseract eurotext.tif outputbase -l eng
+    # Show the result
     - cat outputbase.txt
 
 about:
