@@ -35,16 +35,9 @@ requirements:
     - cmake >=3.10  # [win]
   host:
     - libarchive
-    - jpeg
     - leptonica >=1.74.2
-    - libpng
-    - libtiff
-    - libwebp
-    - openjpeg
-    - xz             # [not win]
-    - zlib
-  run:
-    - _openmp_mutex  # [linux]
+  #run:
+  #  - _openmp_mutex  # [linux]
 
 test:
   files:
@@ -53,7 +46,8 @@ test:
     - tesseract -v
     - tesseract --help
     - tesseract --list-langs
-    - tesseract eurotext.tif outputbase
+    - tesseract eurotext.tif outputbase -l eng
+    - cat outputbase.txt
 
 about:
   home: https://github.com/tesseract-ocr/tesseract
