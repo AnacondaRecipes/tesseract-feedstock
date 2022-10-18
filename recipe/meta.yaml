@@ -30,7 +30,6 @@ requirements:
     - automake      # [not win]
     - libtool       # [not win]
     - pkg-config
-    - make          # [not win]
     - cmake >=3.10  # [win]
   host:
     - giflib        # [not win]
