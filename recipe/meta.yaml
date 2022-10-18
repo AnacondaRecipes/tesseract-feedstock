@@ -30,7 +30,7 @@ requirements:
     - automake      # [not win]
     - libtool       # [not win]
     - pkg-config
-    # make is neede for bootstrapping makefile fragments for automatic dependency tracking
+    # make is needed for bootstrapping makefile fragments for automatic dependency tracking
     - make          # [not win]
     - cmake >=3.10  # [win]
   host:
