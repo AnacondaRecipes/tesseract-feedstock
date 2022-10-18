@@ -1,37 +1,31 @@
 :: cmd
 
-dir %LIBRARY_PREFIX%
-dir %LIBRARY_INC%
-dir %LIBRARY_LIB%
-
 echo "Building %PKG_NAME%."
 cd tesseract
 if errorlevel 1 exit /b 1
-
 
 :: Isolate the build.
 mkdir Build-%PKG_NAME%
 cd Build-%PKG_NAME%
 if errorlevel 1 exit /b 1
 
-
 :: Generate the build files.
 echo "Generating the build files..."
 cmake -G "NMake Makefiles" ^
-      %CMAKE_ARGS% ^
-      -D CMAKE_BUILD_TYPE=Release ^
-      -D CMAKE_PREFIX_PATH=%LIBRARY_PREFIX% ^
-      -D CMAKE_INCLUDE_PATH=%LIBRARY_INC% ^
-      -D CMAKE_LIBRARY_PATH=%LIBRARY_LIB% ^
-      -D CMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ^
-      -D Leptonica_DIR=%LIBRARY_PREFIX% ^
-      -D Leptonica_INCLUDE_DIRS=%LIBRARY_PREFIX%\include\leptonica ^
-      -D Leptonica_LIBRARY_DIRS=%LIBRARY_PREFIX%\leptonica ^
-      -D SW_BUILD=OFF ^
-      -D BUILD_TRAINING_TOOLS=OFF ^
-      -D BUILD_SHARED_LIBS=ON ^
-      -D CMAKE_MODULE_LINKER_FLAGS=-whole-archive ^
-      ..
+    %CMAKE_ARGS% ^
+    -D CMAKE_BUILD_TYPE=Release ^
+    -D CMAKE_PREFIX_PATH=%LIBRARY_PREFIX% ^
+    -D CMAKE_INCLUDE_PATH=%LIBRARY_INC% ^
+    -D CMAKE_LIBRARY_PATH=%LIBRARY_LIB% ^
+    -D CMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ^
+    -D Leptonica_DIR=%LIBRARY_PREFIX% ^
+    :: The real place where leptonica headers are:
+    ::-D Leptonica_INCLUDE_DIRS=%LIBRARY_PREFIX%\include\leptonica ^
+    -D SW_BUILD=OFF ^
+    -D BUILD_TRAINING_TOOLS=OFF ^
+    -D BUILD_SHARED_LIBS=ON ^
+    -D CMAKE_MODULE_LINKER_FLAGS=-whole-archive ^
+    ..
 if errorlevel 1 exit 1
 
 cmake --build . --config Release
