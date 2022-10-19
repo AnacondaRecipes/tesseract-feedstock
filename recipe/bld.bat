@@ -1,19 +1,31 @@
-cd tesseract
-mkdir build
-cd build
+:: cmd
 
+echo "Building %PKG_NAME%."
+cd tesseract
+if errorlevel 1 exit /b 1
+
+:: Isolate the build.
+mkdir Build-%PKG_NAME%
+cd Build-%PKG_NAME%
+if errorlevel 1 exit /b 1
+
+:: Generate the build files.
+echo "Generating the build files..."
 cmake -G "NMake Makefiles" ^
-      -D CMAKE_BUILD_TYPE=Release ^
-      -D CMAKE_PREFIX_PATH=%LIBRARY_PREFIX% ^
-      -D CMAKE_INCLUDE_PATH=%LIBRARY_INC% ^
-      -D CMAKE_LIBRARY_PATH=%LIBRARY_LIB% ^
-      -D CMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ^
-      -D Leptonica_DIR=%LIBRARY_PREFIX% ^
-      -D SW_BUILD=OFF ^
-      -D BUILD_TRAINING_TOOLS=OFF ^
-      -D BUILD_SHARED_LIBS=ON ^
-      -D CMAKE_MODULE_LINKER_FLAGS=-whole-archive ^
-      ..
+    %CMAKE_ARGS% ^
+    -D CMAKE_BUILD_TYPE=Release ^
+    -D CMAKE_PREFIX_PATH=%LIBRARY_PREFIX% ^
+    -D CMAKE_INCLUDE_PATH=%LIBRARY_INC% ^
+    -D CMAKE_LIBRARY_PATH=%LIBRARY_LIB% ^
+    -D CMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ^
+    -D Leptonica_DIR=%LIBRARY_PREFIX% ^
+    :: The real place where leptonica headers are:
+    ::-D Leptonica_INCLUDE_DIRS=%LIBRARY_PREFIX%\include\leptonica ^
+    -D SW_BUILD=OFF ^
+    -D BUILD_TRAINING_TOOLS=OFF ^
+    -D BUILD_SHARED_LIBS=ON ^
+    -D CMAKE_MODULE_LINKER_FLAGS=-whole-archive ^
+    ..
 if errorlevel 1 exit 1
 
 cmake --build . --config Release
@@ -45,3 +57,7 @@ for %%F in (activate deactivate) DO (
     copy %RECIPE_DIR%\%%F.ps1 %PREFIX%\etc\conda\%%F.d\%PKG_NAME%_%%F.ps1
     if %errorlevel% neq 0 exit /b %errorlevel%
 )
+
+:: Error free exit.
+echo "Error free exit!"
+exit 0

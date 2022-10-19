@@ -13,10 +13,12 @@ source:
     sha256: d0e3bb6f3b4e75748680524a1d116f2bfb145618f8ceed55b279d15098a530f9
     folder: tessdata_fast
 
-
 build:
-  number: 1
-  skip: true  # [win and vc<14]
+  number: 0
+  # Currently tesseract hasn't the Windows support because it uses the third-party
+  # software for compiling (SW - Software Network client), see https://tesseract-ocr.github.io/tessdoc/Compiling.html#windows,
+  # or the installers of the Mannheim University Library (UB Mannheim), see https://github.com/UB-Mannheim/tesseract/wiki
+  skip: True  # [win]
   run_exports:
     - {{ pin_subpackage(name, max_pin='x.x.x') }}
 
@@ -24,46 +26,43 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - autoconf  # [not win]
-    - automake  # [not win]
-    - libtool  # [not win]
-    - pkg-config  # [not win]
-    - make  # [not win]
-    - cmake  # [win]
-
+    - autoconf      # [not win]
+    - automake      # [not win]
+    - cmake >=3.10  # [win]
+    - libtool       # [not win]
+    # make is needed for bootstrapping makefile fragments for automatic dependency tracking
+    - make          # [not win]
+    - pkg-config
   host:
-    - giflib  # [not win]
+    - leptonica >=1.74.2
     - libarchive
-    - jpeg
-    - leptonica  # [not win]
-    - leptonica  <1.80  # [win]
-    - libpng
-    - libtiff
-    - libwebp
-    - openjpeg
-    - xz  # [not win]
-    - zlib
+  run:
+    - _openmp_mutex  # [linux]
 
 test:
   files:
     - eurotext.tif
   commands:
+    - tesseract -v
     - tesseract --help
     - tesseract --list-langs
-    - tesseract eurotext.tif outputbase
+    - tesseract eurotext.tif outputbase -l eng
+    # Show the result
+    - cat outputbase.txt
 
 about:
   home: https://github.com/tesseract-ocr/tesseract
   license: Apache-2.0
   license_family: Apache
   license_file: tesseract/LICENSE
+  license_url: https://github.com/tesseract-ocr/tesseract/blob/main/LICENSE
   summary: An optical character recognition (OCR) engine
 
   description: |
     Tesseract is an OCR engine with support for unicode and the ability
     to recognize more than 100 languages out of the box. It can be
     trained to recognize other languages.
-  doc_url: https://github.com/tesseract-ocr/tesseract
+  doc_url: https://tesseract-ocr.github.io/tessdoc/
   dev_url: https://github.com/tesseract-ocr/tesseract
 
 extra:
