@@ -14,7 +14,7 @@ source:
     folder: tessdata_fast
 
 build:
-  number: 0
+  number: 1
   # Currently tesseract hasn't the Windows support because it uses the third-party
   # software for compiling (SW - Software Network client), see https://tesseract-ocr.github.io/tessdoc/Compiling.html#windows,
   # or the installers of the Mannheim University Library (UB Mannheim), see https://github.com/UB-Mannheim/tesseract/wiki
