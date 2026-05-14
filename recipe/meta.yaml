@@ -43,13 +43,23 @@ requirements:
 test:
   files:
     - eurotext.tif
+    - eurotext.expected.txt
   commands:
     - tesseract -v
     - tesseract --help
     - tesseract --list-langs
+    # Smoke test: eng-only OCR, just verify the binary runs end-to-end.
     - tesseract eurotext.tif outputbase -l eng
-    # Show the result
     - cat outputbase.txt
+    # Regression test: multi-language OCR against a captured baseline.
+    # eurotext.expected.txt was captured from the 5.5.2 build using the
+    # same -l flag. Tesseract is deterministic for a given binary +
+    # tessdata + flags, so any drift here means something changed in the
+    # build. If a future bump trips this, investigate before merging:
+    # if OCR genuinely got better, update eurotext.expected.txt and
+    # note it in the PR.
+    - tesseract eurotext.tif outputbase-multi -l eng+deu+fra+ita+spa+por
+    - diff -u eurotext.expected.txt outputbase-multi.txt
 
 about:
   home: https://github.com/tesseract-ocr/tesseract
