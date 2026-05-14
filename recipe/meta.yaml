@@ -15,26 +15,27 @@ source:
 
 build:
   number: 0
-  # Currently tesseract hasn't the Windows support because it uses the third-party
-  # software for compiling (SW - Software Network client), see https://tesseract-ocr.github.io/tessdoc/Compiling.html#windows,
-  # or the installers of the Mannheim University Library (UB Mannheim), see https://github.com/UB-Mannheim/tesseract/wiki
+  # Windows support not yet implemented. Upstream dropped the SW dependency in 5.5.x
+  # and now builds with cmake+Ninja+MSVC (SW_BUILD=OFF). Windows is feasible but
+  # requires verifying all deps are available in the channel. Tracked as a follow-up.
   skip: true  # [win]
   run_exports:
     - {{ pin_subpackage(name, max_pin='x.x.x') }}
 
 requirements:
   build:
+    - {{ stdlib('c') }}
     - {{ compiler('c') }}
-    - {{ compiler('cxx') }}
+    - {{ compiler('cxx') }}  # upstream builds with GCC 14 on Ubuntu 24.04 as of 5.5.2
     - autoconf  # [not win]
     - automake  # [not win]
-    - cmake >=3.10  # [win]
+    - cmake >=3.30  # [win]  # upstream bumped cmake requirement in 5.3+
     - libtool  # [not win]
     # make is needed for bootstrapping makefile fragments for automatic dependency tracking
     - make  # [not win]
     - pkg-config
   host:
-    - leptonica >=1.74.2
+    - leptonica 1.82.0
     - libarchive 3.8
   run:
     - _openmp_mutex  # [linux]
