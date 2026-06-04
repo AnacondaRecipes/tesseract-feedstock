@@ -35,7 +35,7 @@ requirements:
     - make  # [not win]
     - pkg-config
   host:
-    - leptonica >=1.74.2
+    - leptonica {{ leptonica }}
     - libarchive 3.8
   run:
     - _openmp_mutex  # [linux]
