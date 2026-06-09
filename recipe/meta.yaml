@@ -38,7 +38,7 @@ requirements:
     - leptonica {{ leptonica }}
     - libarchive 3.8
   run:
-    - _openmp_mutex  # [linux]
+    - libgomp  # [linux]
 
 test:
   files:
