@@ -37,6 +37,7 @@ requirements:
   host:
     - leptonica {{ leptonica }}
     - libarchive 3.8
+    - libgomp  # [linux]
   run:
     - libgomp  # [linux]
 
