@@ -36,7 +36,11 @@ requirements:
     - pkg-config
   host:
     - leptonica {{ leptonica }}
-    - libarchive 3.8
+    - libarchive {{ libarchive }}
+    # libgomp with no version makes the linter unhappy. Per Eric Lundby in
+    # Slack June 2026: leave it unpinned for right now ... I should port the
+    # openmp changes to gcc14 ... [then we can] put it in the cbc or use the
+    # c_compiler_version jinja, but that's not available yet.
     - libgomp  # [linux]
   run:
     - libgomp  # [linux]
