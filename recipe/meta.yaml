@@ -15,10 +15,9 @@ source:
 
 build:
   number: 0
-  # Windows support not yet implemented. Upstream dropped the SW dependency in 5.5.x
-  # and now builds with cmake+Ninja+MSVC (SW_BUILD=OFF). Windows is feasible but
-  # requires verifying all deps are available in the channel. Tracked as a follow-up.
-  skip: true  # [win]
+  # Windows builds with cmake + Ninja + MSVC (SW_BUILD=OFF). Upstream dropped the
+  # old Software Network (SW) client dependency in 5.5.x, which was the historical
+  # blocker. See recipe/bld.bat. (PKG-13890 win enablement; unblocks PKG-13803.)
   run_exports:
     - {{ pin_subpackage(name, max_pin='x.x.x') }}
 
@@ -30,6 +29,7 @@ requirements:
     - autoconf  # [not win]
     - automake  # [not win]
     - cmake >=3.30  # [win]  # upstream bumped cmake requirement in 5.3+
+    - ninja  # [win]
     - libtool  # [not win]
     # make is needed for bootstrapping makefile fragments for automatic dependency tracking
     - make  # [not win]
@@ -42,6 +42,17 @@ requirements:
     # openmp changes to gcc14 ... [then we can] put it in the cbc or use the
     # c_compiler_version jinja, but that's not available yet.
     - libgomp  # [linux] # analint: host_section_needs_exact_pinnings
+    # Imaging deps are pulled in transitively by leptonica, but list them
+    # explicitly on Windows so they're present in the host link environment
+    # (mirrors the conda-forge recipe). libjpeg-turbo is what our channel's
+    # leptonica links against on win-64.
+    - giflib  # [win]
+    - libjpeg-turbo  # [win]
+    - libpng  # [win]
+    - libtiff  # [win]
+    - libwebp  # [win]
+    - openjpeg  # [win]
+    - zlib  # [win]
   run:
     - libgomp  # [linux]
 
@@ -55,7 +66,8 @@ test:
     - tesseract --list-langs
     # Smoke test: eng-only OCR, just verify the binary runs end-to-end.
     - tesseract eurotext.tif outputbase -l eng
-    - cat outputbase.txt
+    - cat outputbase.txt   # [not win]
+    - type outputbase.txt  # [win]
     # Regression test: multi-language OCR against a captured baseline.
     # eurotext.expected.txt was captured from the 5.5.2 build using the
     # same -l flag. Tesseract is deterministic for a given binary +
@@ -64,7 +76,8 @@ test:
     # if OCR genuinely got better, update eurotext.expected.txt and
     # note it in the PR.
     - tesseract eurotext.tif outputbase-multi -l eng+deu+fra+ita+spa+por
-    - diff -u eurotext.expected.txt outputbase-multi.txt
+    - diff -u eurotext.expected.txt outputbase-multi.txt  # [not win]
+    - fc eurotext.expected.txt outputbase-multi.txt       # [win]
 
 about:
   home: https://github.com/tesseract-ocr/tesseract
