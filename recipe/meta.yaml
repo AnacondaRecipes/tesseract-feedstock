@@ -1,5 +1,5 @@
 {% set name = "tesseract" %}
-{% set version = "5.2.0" %}
+{% set version = "5.5.2" %}
 
 package:
   name: {{ name|lower }}
@@ -7,58 +7,71 @@ package:
 
 source:
   - url: https://github.com/tesseract-ocr/{{ name }}/archive/{{ version }}.tar.gz
-    sha256: eba4deb2f92a3f89a6623812074af8c53b772079525b3c263aa70bbf7b748b3c
+    sha256: 6235ea0dae45ea137f59c09320406f5888383741924d98855bd2ce0d16b54f21
     folder: tesseract
   - url: https://github.com/tesseract-ocr/tessdata_fast/archive/4.1.0.tar.gz
     sha256: d0e3bb6f3b4e75748680524a1d116f2bfb145618f8ceed55b279d15098a530f9
     folder: tessdata_fast
 
 build:
-  number: 5
-  # Currently tesseract hasn't the Windows support because it uses the third-party
-  # software for compiling (SW - Software Network client), see https://tesseract-ocr.github.io/tessdoc/Compiling.html#windows,
-  # or the installers of the Mannheim University Library (UB Mannheim), see https://github.com/UB-Mannheim/tesseract/wiki
-  skip: True  # [win]
+  number: 0
+  # Windows support not yet implemented. Upstream dropped the SW dependency in 5.5.x
+  # and now builds with cmake+Ninja+MSVC (SW_BUILD=OFF). Windows is feasible but
+  # requires verifying all deps are available in the channel. Tracked as a follow-up.
+  skip: true  # [win]
   run_exports:
     - {{ pin_subpackage(name, max_pin='x.x.x') }}
 
 requirements:
   build:
+    - {{ stdlib('c') }}
     - {{ compiler('c') }}
-    - {{ compiler('cxx') }}
-    - autoconf      # [not win]
-    - automake      # [not win]
-    - cmake >=3.10  # [win]
-    - libtool       # [not win]
+    - {{ compiler('cxx') }}  # upstream builds with GCC 14 on Ubuntu 24.04 as of 5.5.2
+    - autoconf  # [not win]
+    - automake  # [not win]
+    - cmake >=3.30  # [win]  # upstream bumped cmake requirement in 5.3+
+    - libtool  # [not win]
     # make is needed for bootstrapping makefile fragments for automatic dependency tracking
-    - make          # [not win]
+    - make  # [not win]
     - pkg-config
   host:
-    - leptonica >=1.74.2
-    - libarchive 3.8
-    - libgomp  # [linux]
+    - leptonica {{ leptonica }}
+    - libarchive {{ libarchive }}
+    # libgomp with no version makes the linter unhappy. Per Eric Lundby in
+    # Slack June 2026: leave it unpinned for right now ... I should port the
+    # openmp changes to gcc14 ... [then we can] put it in the cbc or use the
+    # c_compiler_version jinja, but that's not available yet.
+    - libgomp  # [linux] # analint: host_section_needs_exact_pinnings
   run:
-    - libgomp # [linux]
+    - libgomp  # [linux]
 
 test:
   files:
     - eurotext.tif
+    - eurotext.expected.txt
   commands:
     - tesseract -v
     - tesseract --help
     - tesseract --list-langs
+    # Smoke test: eng-only OCR, just verify the binary runs end-to-end.
     - tesseract eurotext.tif outputbase -l eng
-    # Show the result
     - cat outputbase.txt
+    # Regression test: multi-language OCR against a captured baseline.
+    # eurotext.expected.txt was captured from the 5.5.2 build using the
+    # same -l flag. Tesseract is deterministic for a given binary +
+    # tessdata + flags, so any drift here means something changed in the
+    # build. If a future bump trips this, investigate before merging:
+    # if OCR genuinely got better, update eurotext.expected.txt and
+    # note it in the PR.
+    - tesseract eurotext.tif outputbase-multi -l eng+deu+fra+ita+spa+por
+    - diff -u eurotext.expected.txt outputbase-multi.txt
 
 about:
   home: https://github.com/tesseract-ocr/tesseract
   license: Apache-2.0
   license_family: Apache
   license_file: tesseract/LICENSE
-  license_url: https://github.com/tesseract-ocr/tesseract/blob/main/LICENSE
   summary: An optical character recognition (OCR) engine
-
   description: |
     Tesseract is an OCR engine with support for unicode and the ability
     to recognize more than 100 languages out of the box. It can be
