@@ -18,6 +18,10 @@ build:
   # Windows builds with cmake + Ninja + MSVC (SW_BUILD=OFF). Upstream dropped the
   # old Software Network (SW) client dependency in 5.5.x, which was the historical
   # blocker. See recipe/bld.bat. (PKG-13890 win enablement; unblocks PKG-13803.)
+  #
+  # TEMPORARY: skip everything except Windows while we iterate on the Windows
+  # build. REMOVE THIS LINE before merge so linux/osx keep building. (PKG-13890)
+  skip: true  # [not win]
   run_exports:
     - {{ pin_subpackage(name, max_pin='x.x.x') }}
 
