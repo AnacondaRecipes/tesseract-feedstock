@@ -41,7 +41,7 @@ requirements:
     # Slack June 2026: leave it unpinned for right now ... I should port the
     # openmp changes to gcc14 ... [then we can] put it in the cbc or use the
     # c_compiler_version jinja, but that's not available yet.
-    - libgomp  # [linux]
+    - libgomp  # [linux] # analint: host_section_needs_exact_pinnings
   run:
     - libgomp  # [linux]
 
