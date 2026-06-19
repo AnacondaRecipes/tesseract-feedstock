@@ -46,14 +46,8 @@ requirements:
     # openmp changes to gcc14 ... [then we can] put it in the cbc or use the
     # c_compiler_version jinja, but that's not available yet.
     - libgomp  # [linux] # analint: host_section_needs_exact_pinnings
-    # tesseract's CMake links libtiff directly on Windows for multi-page TIFF
-    # support: find_package(TIFF) + target_link_libraries guarded by
-    # `if(HAVE_TIFFIO_H AND WIN32)`. So it's a direct build dep on win (needs
-    # tiffio.h at configure time + the import lib at link time), not just a
-    # transitive leptonica dep. The other imaging codecs (png, jpeg, webp,
-    # openjpeg, giflib, zlib) are not referenced by tesseract's own build --
-    # leptonica handles them and carries them via run_exports -- so they don't
-    # belong here.
+    # tesseract links libtiff directly on Windows (see commit message for the
+    # find_package(TIFF) / WIN32 detail); other imaging codecs come via leptonica.
     - libtiff {{ libtiff }}  # [win]
   run:
     - libgomp  # [linux]
