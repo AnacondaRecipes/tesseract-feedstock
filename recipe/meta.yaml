@@ -15,13 +15,6 @@ source:
 
 build:
   number: 0
-  # Windows builds with cmake + Ninja + MSVC (SW_BUILD=OFF). Upstream dropped the
-  # old Software Network (SW) client dependency in 5.5.x, which was the historical
-  # blocker. See recipe/bld.bat. (PKG-13890 win enablement; unblocks PKG-13803.)
-  #
-  # TEMPORARY: skip everything except Windows while we iterate on the Windows
-  # build. REMOVE THIS LINE before merge so linux/osx keep building. (PKG-13890)
-  skip: true  # [not win]
   run_exports:
     - {{ pin_subpackage(name, max_pin='x.x.x') }}
 
@@ -32,11 +25,10 @@ requirements:
     - {{ compiler('cxx') }}  # upstream builds with GCC 14 on Ubuntu 24.04 as of 5.5.2
     - autoconf  # [not win]
     - automake  # [not win]
+    - libtool  # [not win]
+    - make  # [not win]
     - cmake >=3.30  # [win]  # upstream bumped cmake requirement in 5.3+
     - ninja  # [win]
-    - libtool  # [not win]
-    # make is needed for bootstrapping makefile fragments for automatic dependency tracking
-    - make  # [not win]
     - pkg-config
   host:
     - leptonica {{ leptonica }}
@@ -46,8 +38,6 @@ requirements:
     # openmp changes to gcc14 ... [then we can] put it in the cbc or use the
     # c_compiler_version jinja, but that's not available yet.
     - libgomp  # [linux] # analint: host_section_needs_exact_pinnings
-    # tesseract links libtiff directly on Windows (see commit message for the
-    # find_package(TIFF) / WIN32 detail); other imaging codecs come via leptonica.
     - libtiff {{ libtiff }}  # [win]
   run:
     - libgomp  # [linux]
