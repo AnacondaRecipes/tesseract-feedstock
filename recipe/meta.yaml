@@ -28,7 +28,7 @@ requirements:
     - libtool  # [not win]
     - make  # [not win]
     - cmake >=3.30  # [win]  # upstream bumped cmake requirement in 5.3+
-    - ninja  # [win]
+    - ninja-base  # [win]
     - pkg-config
   host:
     - leptonica {{ leptonica }}
