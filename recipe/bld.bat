@@ -5,13 +5,15 @@ cd tesseract
 if errorlevel 1 exit /b 1
 
 :: Isolate the build.
-mkdir Build-%PKG_NAME%
-cd Build-%PKG_NAME%
+mkdir build
+cd build
 if errorlevel 1 exit /b 1
 
-:: Generate the build files.
+:: Generate the build files. Ninja + MSVC, matching upstream's cmake-win64.yml
+:: and the conda-forge recipe. SW_BUILD=OFF drops the old Software Network
+:: client dependency that used to block the Windows build (removed upstream in 5.5.x).
 echo "Generating the build files..."
-cmake -G "NMake Makefiles" ^
+cmake -G "Ninja" ^
     %CMAKE_ARGS% ^
     -D CMAKE_BUILD_TYPE=Release ^
     -D CMAKE_PREFIX_PATH=%LIBRARY_PREFIX% ^
@@ -19,27 +21,36 @@ cmake -G "NMake Makefiles" ^
     -D CMAKE_LIBRARY_PATH=%LIBRARY_LIB% ^
     -D CMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ^
     -D Leptonica_DIR=%LIBRARY_PREFIX% ^
-    :: The real place where leptonica headers are:
-    ::-D Leptonica_INCLUDE_DIRS=%LIBRARY_PREFIX%\include\leptonica ^
     -D SW_BUILD=OFF ^
     -D BUILD_TRAINING_TOOLS=OFF ^
     -D BUILD_SHARED_LIBS=ON ^
-    -D CMAKE_MODULE_LINKER_FLAGS=-whole-archive ^
     ..
 if errorlevel 1 exit 1
 
 cmake --build . --config Release
 if errorlevel 1 exit 1
 
-cmake --build . --config Release --target install 
+cmake --build . --config Release --target install
 if errorlevel 1 exit 1
 
-:: Make copies of the .lib file without the embedded version number
-copy %LIBRARY_LIB%\tesseract41.lib %LIBRARY_LIB%\tesseract.lib
+:: Make a copy of the import lib without the embedded version number so
+:: downstream consumers can link plain -ltesseract. Upstream names the
+:: Windows lib tesseract<MAJOR><MINOR> (CMakeLists OUTPUT_NAME), i.e.
+:: tesseract55 for 5.5.x -- NOT tesseract41 (that was the 4.1 name).
+copy %LIBRARY_LIB%\tesseract55.lib %LIBRARY_LIB%\tesseract.lib
+if errorlevel 1 exit /b 1
 
-:: Copy tessdata to shared directory
+:: Copy tessdata to the shared directory that TESSDATA_PREFIX points at
+:: (see activate.bat: %CONDA_PREFIX%\share\tessdata).
 mkdir %PREFIX%\share\tessdata
 copy ..\..\tessdata_fast\*.traineddata %PREFIX%\share\tessdata
+if errorlevel 1 exit /b 1
+
+:: The install lands under %LIBRARY_PREFIX% (= %PREFIX%\Library), so the
+:: installed tessdata configs need to move across the Library split to where
+:: TESSDATA_PREFIX expects them.
+move %LIBRARY_PREFIX%\share\tessdata\configs %PREFIX%\share\tessdata
+if errorlevel 1 exit /b 1
 
 setlocal EnableDelayedExpansion
 :: Copy the [de]activate scripts to %PREFIX%\etc\conda\[de]activate.d.
